@@ -1,0 +1,33 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  cursor: url(crosshair.png) 15 15, crosshair;
+  background: url(lake.jpg) 0 0 no-repeat;
+  background-size: cover;
+  overflow: hidden;
+  font-family: Helvetica, sans-serif;
+}
+
+.container {
+  height: 100%;
+  position: relative;
+}
+
+.duck {
+  position: absolute;
+  width: 150px;
+}
+
+.winning {
+  color: green;
+  text-shadow: 1px 1px 2px #fff;
+}
+
+.losing {
+  color: red;
+  text-shadow: 1px 1px 2px #fff;
+}
