@@ -1,42 +1,65 @@
-var screenWidth = document.body.offsetWidth;
-function createDucks(count){
-  var delay = 0;
-  for (var i = 0; i < count; i++) {
-    var duck = $('<img src="duck.png" class="duck" />');
-    duck.css({
-      left: Math.random(i * 100) + 'px',
-      top: 50 * Math.random(i * 10) + '%'
+// game config
+var duckCount = 10;
+// game state
+var gameDone = false;
+var ducks = [];
+var ducksHit = 0;
+var ducksFaded = 0;
+// html elements & document values
+var documentWidth = document.body.offsetWidth;
+var container;
+var result;
+
+
+// ends the game if all ducks are hit (win), or any duck has faded without being hit (lose)
+function maybeEndGame() {
+  if (ducksHit >= duckCount) {
+    gameDone = true;
+    result.addClass('winning').text('You won!');
+  } else if (ducksFaded > 0) {
+    ducks.forEach(function(duck) {
+      duck.remove();
     });
-    duck.appendTo($('.container'));
-    delay += 5000;
-    var posX = screenWidth - Math.random(i * 100) + 'px';
-    duck.hide().fadeIn(Math.random(i * 200)).animate({
-      left: posX
-    }, delay, function(){
-      $(this).fadeOut();
-    })
+    gameDone = true;
+    result.addClass('losing').text('You lost!');
   }
 }
 
-$(function(){
-  var duckCount = 3;
-  createDucks(duckCount);
-  var counter = 0;
-  var misCounter = 0;
-  var result = $('<h1 />').appendTo($('.container'));
-  $(document).on('click', function(e){
-    if($(e.target).hasClass('duck')) {
-      counter++;
-      $(e.target).css({opacity: 0});
-    } else {
-      misCounter++;
-    }
-    console.log(counter, misCounter);
-    if(counter >= duckCount) {
-      result.removeClass('losing').addClass('winning').text('You won!');
-    } else if(misCounter >= counter) {
-      result.removeClass('winning').addClass('losing').text('You lost!');
-    }
 
+function createDuck() {
+  if (gameDone) return;
+  var duck = $('<img src="duck.png" class="duck" />');
+  ducks.push(duck);
+
+  // spread around 70% of the viewport
+  duck.css({ top: 70 * Math.random() + '%' });
+  duck.appendTo(container);
+  duck.on('click', function() {
+    ducksHit++;
+    duck.remove();
+    duck.removed = true;
+    maybeEndGame();
   });
+  duck.animate({ left: documentWidth }, 10000000 / documentWidth, function() {
+    // duck is already hit & removed, game continues
+    if (duck.removed) return;
+    duck.remove();
+    ducksFaded++;
+    maybeEndGame();
+  });
+}
+
+
+function createDucks(count) {
+  for (var i = 0; i < count; i++) {
+    var delay = (i + 1) * 1000;
+    setTimeout(createDuck, delay);
+  }
+}
+
+
+$(document).ready(function() {
+  container = $('.container');
+  result = $('<h1 />').appendTo(container);
+  createDucks(duckCount);
 });

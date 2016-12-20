@@ -3,6 +3,7 @@ html, body {
 }
 
 body {
+  user-select: none;
   margin: 0;
   padding: 0;
   cursor: url(crosshair.png) 15 15, crosshair;
@@ -24,10 +25,14 @@ body {
 
 .winning {
   color: green;
+  text-align: center;
+  margin-top: 25vh;
   text-shadow: 1px 1px 2px #fff;
 }
 
 .losing {
   color: red;
+  text-align: center;
+  margin-top: 25vh;
   text-shadow: 1px 1px 2px #fff;
 }
